@@ -1,6 +1,6 @@
 module.exports = function (RED) {
   function websocketSubscriberNode(config) {
-    const WebSocket = require('ws');
+    const WebSocket = require("ws");
     RED.nodes.createNode(this, config);
     let node = this;
     let nodeInstance = null;
@@ -9,24 +9,22 @@ module.exports = function (RED) {
     let ws;
     const connectToServer = () => {
       //Create WebSocket Connection
-      node.log('Create websocket');
+      node.log("Create websocket");
       ws = new WebSocket(`${config.url}`, {
         headers: {
-          Authorization: `${config.token}`, // your token
-          'X-Client-Id': `${config.xclientid}`
-        }
+          Authorization: `Bearer ${config.token}`, // your token
+        },
       });
 
-    
       //Connection failed
       ws.onerror = function (err) {
         node.log(err);
-        node.error('Could not connect to server', err);
+        node.error("Could not connect to server", err);
       };
       //Connected
       ws.onopen = function () {
         setStatusGreen();
-        node.log('connected');
+        node.log("connected");
       };
       //Connection closed
       ws.onclose = function () {
@@ -34,14 +32,14 @@ module.exports = function (RED) {
         if (reconnectTimer !== null) {
           clearTimeout(reconnectTimer);
         }
-        node.log('Connection closed');
+        node.log("Connection closed");
       };
       //Message incoming
-      ws.on('message', (msg) => handleMessage(msg));
+      ws.on("message", (msg) => handleMessage(msg));
       function handleMessage(msg) {
         const msgToSend = {
           streaming_msg: msg,
-          websocket: ws.send.bind(ws)
+          websocket: ws.send.bind(ws),
         };
         node.send(msgToSend);
       }
@@ -50,22 +48,24 @@ module.exports = function (RED) {
     //ReconnectHandler
     (function reconnectHandler() {
       nodeInstance = connectToServer();
-      nodeInstance.on('close', () => {
+      nodeInstance.on("close", () => {
         setStatusRed();
         if (reconnectTimer === null && nodeIsClosing === false) {
-          node.log('close received. Explicit reconnect attempt in 60 seconds.');
+          node.log("close received. Explicit reconnect attempt in 60 seconds.");
           reconnectTimer = setTimeout(() => {
             reconnectHandler();
             reconnectTimer = null;
           }, 60000);
         } else {
-          node.log('Node in flow is shutting down, not attempting to reconenct.');
+          node.log(
+            "Node in flow is shutting down, not attempting to reconenct."
+          );
         }
 
         nodeInstance = null;
       });
     })();
-    node.on('close', function (done) {
+    node.on("close", function (done) {
       setStatusRed();
       if (reconnectTimer !== null) {
         clearTimeout(reconnectTimer);
@@ -77,19 +77,22 @@ module.exports = function (RED) {
     //Set status connected
     function setStatusGreen() {
       node.status({
-        fill: 'green',
-        shape: 'dot',
-        text: 'connected'
+        fill: "green",
+        shape: "dot",
+        text: "connected",
       });
     }
     //Set status disconnected
     function setStatusRed() {
       node.status({
-        fill: 'red',
-        shape: 'ring',
-        text: 'disconnected'
+        fill: "red",
+        shape: "ring",
+        text: "disconnected",
       });
     }
   }
-  RED.nodes.registerType('custom-websocket-subscriber',websocketSubscriberNode);
-}
+  RED.nodes.registerType(
+    "custom-websocket-subscriber",
+    websocketSubscriberNode
+  );
+};
