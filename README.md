@@ -1,11 +1,11 @@
-# node-red-contrib-ws-subscriber-custom
+# node-red-contrib-ws-subscriber-custom-deltaecho07
 
 Custom Websocket for connecting to ESB with help of Header with Token and X-ClientId.
 
 ### Installation
 
 ```
-npm install node-red-contrib-ws-subscriber-custom
+npm install node-red-contrib-ws-subscriber-custom-deltaecho07
 ```
 
 Or in NodeRED Manage palette and serarch for `node-red-contrib-ws-subscriber-custom-deltaecho07`
