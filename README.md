@@ -1,6 +1,6 @@
 # node-red-contrib-ws-subscriber-custom-deltaecho07
 
-Custom Websocket for connecting to ESB with help of Header with Token and X-ClientId.
+Custom Websocket for connecting with to a Socket with a Bearer Authentication.
 
 ### Installation
 
@@ -21,23 +21,6 @@ Every subscriber node needs
 - Websocket-Serveradress
 - Bearer Token
 
-If everything is correct the node shows a green dot after deploy. If the dot is red, something went wrong while connecting to the WSS.
+If everything is correct the node shows a green dot after deploy. If the dot is red, something went wrong while connecting to the WSS. Check the Logs of Node Red to determine the error.
 
-Incoming messages gets append to the output message object with the name "streaming_msg".
-![incomingmessage](docs/incoming_message.png)
-
-#### custom-websocket-acknowledge
-
-![acknowledge](docs/acknowledge.png)
-
-The acknowledge Node needs special format of Input Message (from custom-websocket-subscriber)
-
-- the acknowledge Node sends messages back to the WSS configured in "custom-websocket-subsriber".
-- This message is sended back to WSS to acknowledge:['message-ack', streaming_msg.message[1], streaming_msg.message[2]]
-
-- Example:
-- Message send by WSS
-  ![subscribe msg](docs/subscriber_msg.png)
-
-- Message send to WSS by custom-websocket-acknowledge:
-- ['message-ack', 'PRODUCT.7', '2960249']
+Incoming messages are delivered in JSON-format.

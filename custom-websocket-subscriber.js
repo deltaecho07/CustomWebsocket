@@ -35,14 +35,10 @@ module.exports = function (RED) {
         node.log("Connection closed");
       };
       //Message incoming
-      ws.on("message", (msg) => handleMessage(msg));
-      function handleMessage(msg) {
-        const msgToSend = {
-          streaming_msg: msg,
-          websocket: ws.send.bind(ws),
-        };
-        node.send(msgToSend);
-      }
+      ws.on("message", (message) => {
+        node.send(JSON.parse(message));
+      });
+
       return ws;
     };
     //ReconnectHandler
